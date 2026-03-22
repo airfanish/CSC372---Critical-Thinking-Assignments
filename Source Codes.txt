@@ -1,0 +1,169 @@
+SOURCE CODE
+Bank Account Class
+
+package CriticalThinking;
+
+public class BankAccount {
+
+	protected String firstName;
+	protected String lastName;
+	protected int accountID;
+	protected double balance;
+	protected double totalDeposits;
+	protected double totalWithdrawals;
+	protected double interestRate;
+	protected double overdraftFee;
+	
+	//Initialize balance to zero
+	public BankAccount() {
+		this.balance = 0.0;
+	}
+	
+	//Accepts a single value double dollar amount, and the parameter value is added to the balance. Additionally, track total deposits made.
+	public void deposit(double amount) {
+		balance = balance + amount;
+		totalDeposits = totalDeposits + amount;
+	}
+	
+	//Accepts a single value double dollar amount; the parameter value is subtracted from the balance. Additionally, track total withdrawals made
+	public void withdrawal(double amount) {
+		balance = balance - amount;
+		totalWithdrawals = totalWithdrawals + amount;
+	}
+	
+	//Setter for accountID
+	public void setAccountID(int accountID) {
+		this.accountID = accountID;
+	}
+	
+	//Setter for firstName
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+	
+	//Setter for lastName
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
+	
+	//Getter for accountID
+	public int getAccountID() {
+		return accountID;
+	}
+	
+	//Getter for firstName
+	public String getFirstName() {
+		return firstName;
+	}
+	
+	//Getter for lastName
+	public String getLastName() {
+		return lastName;
+	}
+	
+	//Getter for balance
+	public double getBalance() {
+		return balance;
+	}
+	
+	//Initialize method for accountSummary
+	public void accountSummary() {
+		System.out.println("Name: " + " " + firstName + " " + lastName);
+		System.out.println("Account ID: " + accountID);
+		System.out.println("Current Balance: " + balance);
+		System.out.println("Deposits: " + totalDeposits);
+		System.out.println("Withdrawals: " + totalWithdrawals);
+	}
+	}
+
+Checking Account Class
+
+//PART 2: Implement a CheckingAccount class that inherits from the BankAccount class
+package CriticalThinking;
+
+public class CheckingAccount extends BankAccount {
+	
+	double interestRate;
+	double overdraftFee;
+	
+	//implement Checking Account with interest rate and overdraft fee
+	public CheckingAccount(String firstName, String lastName, double balance, double interestRate, double overdraftFee) {
+		super(); //Calls the BankAccount() constructor to set balance to 0.0
+	
+		//Using inherited setters
+		setFirstName(firstName);
+		setLastName(lastName);
+	
+		this.balance = balance;
+		this.interestRate = interestRate;
+		this.overdraftFee = overdraftFee;
+		}
+	
+	//Creating an overdraft fee rule that will display a negative balance that includes a $30 overdraft fee and denotes that a fee has been assessed
+	public void processWithdrawal(double amount) {
+		super.withdrawal(amount);
+	
+		if (balance < 0) {
+		super.withdrawal(overdraftFee);
+		System.out.println("Your account has been overdrafted. An overdraft fee of $" + overdraftFee + " will be applied to your account.");
+		}
+	}
+	
+	//Apply interest fee to the account balance
+	public double applyInterestRate() {
+		double interest = 0.0;
+	
+		if (balance >= 0) {
+				interest = balance * interestRate;
+				deposit(interest);
+		}
+		return interest;
+	}
+	
+	//Will display all superclass attributes and provide an additional interest rate
+	public void accountSummary() {
+		super.accountSummary();
+		System.out.println("Overdraft Fee: " + overdraftFee);
+		System.out.println("Interest Rate: " + interestRate);
+	}
+}
+
+Test Class
+
+package CriticalThinking;
+
+public class Test {
+
+	public Test() {
+		// TODO Auto-generated constructor stub
+	}
+
+	public static void main(String[] args) {
+	
+		//Step 1 - Create an account: firstName, lastName, balance, interestRate, overdraftFee
+	
+		CheckingAccount myAccount = new CheckingAccount("Jane", "Doe", 100.0, 0.05, 30.0);
+	
+		//Step 2 - Test a normal withdrawal
+		System.out.println("--- Withdrawing $25 ---");
+		myAccount.processWithdrawal(25.0);
+		myAccount.accountSummary();
+	
+		//Step 3 - Test an overdraft
+		System.out.println("--- Withdrawing $80 ---");
+		myAccount.processWithdrawal(80.0);
+		myAccount.accountSummary();
+	
+		//Step 4 - Test a deposit
+		System.out.println("--- Deposit $200 ---");
+		myAccount.deposit(200.0);
+		myAccount.accountSummary();
+	
+		//Step 5 - Apply the interest rate
+		double earned = myAccount.applyInterestRate();
+		System.out.println("You have earned $" + earned + " in interest.");
+		myAccount.accountSummary();
+	}
+
+}
+
